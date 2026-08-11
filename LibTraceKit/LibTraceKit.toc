@@ -1,0 +1,35 @@
+## Interface: 11509, 20506, 30403, 40402, 50504, 120007
+## Version: @project-version@
+## Title: Lib|cff12E600TraceKit|r
+## IconTexture: interface/addons/libtracekit/assets/tracekit-icontexture
+
+## Author: Antonio W. Lagnada (kapresoft@gmail.com)
+## Notes: LibTraceKit is a lightweight tracing library for WoW addon developers. Send tagged debug messages straight to Blizzard's Event Trace UI. |cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
+
+## DefaultState: enabled
+## OptionalDeps: Blizzard_EventTrace, DevSuite
+
+## Category-enUS: Libraries
+## Category-deDE: Bibliotheken
+## Category-esES: Bibliotecas
+## Category-esMX: Bibliotecas
+## Category-frFR: Bibliothèques
+## Category-itIT: Librerie
+## Category-koKR: 라이브러리
+## Category-ptBR: Bibliotecas
+## Category-ruRU: Библиотеки
+## Category-zhCN: 库
+## Category-zhTW: 函式庫
+
+## X-Credits: Antonio W. Lagnada (kapresoft@gmail.com)
+## X-Category: Development Tools
+## X-License: All Rights Reserved. |cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
+## X-Github-Repo: https://github.com/kapresoft/wow-addon-LibTraceKit
+## X-Github-Issues: https://github.com/kapresoft/wow-addon-LibTraceKit/issues
+## X-Curse-Project-ID: TBD
+## X-Github-Project-Author: @project-author@
+## X-Github-Project-Hash: @project-hash@
+## X-Github-Project-Last-Changed-Date: @project-date-iso@
+## X-Github-Project-Version: @project-version@
+
+LibTraceKit.lua

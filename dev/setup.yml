@@ -1,0 +1,54 @@
+# This is used for development to pull external libraries.
+# @see also: ./dev/pull-extlib.sh
+# --------------------------
+# cmd: ./dev/release.sh -duz -r ./.release -m _setup.yml
+# Note: This will build in ./.release/_setup directory
+package-as: _setup
+# --------------------------
+no-changelog: true
+
+externals:
+  ThirdParty-Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  ThirdParty-Libs/LibPrettyPrint:
+    url: https://github.com/kapresoft/wow-addon-LibPrettyPrint
+    tag: latest
+  ThirdParty-Libs/Kapresoft-LibUtil:
+    url: https://github.com/kapresoft/wow-lib-util
+    tag: latest
+
+ignore:
+  - "*.sh"
+  - "*.md"
+  - "*.yaml"
+  - "*.yml"
+  - "*.toc"
+  - "*.toml"
+  - ThirdParty/Ace3.xml
+  - ThirdParty/ThirdParty.xml
+  - dev
+  - doc
+  - LICENSE
+  - CHANGELOG.md
+  - Core
+  - Bindings.xml
+  - DevSuite.xml
+  - ThirdParty-Libs/LibStub/tests
+  - ThirdParty-Libs/Kapresoft-LibUtil/dev
+  - ThirdParty-Libs/Kapresoft-LibUtil/LICENSE
+  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-1-0
+  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/Assets
+  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/ThirdParty
+  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.lua
+  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.xml
+  - ThirdParty-Libs/LibPrettyPrint/*.sh
+  - ThirdParty-Libs/LibPrettyPrint/LibPrettyPrint.xml
+  - ThirdParty-Libs/LibPrettyPrint/Assets
+  - ThirdParty-Libs/LibPrettyPrint/dev
+  - ThirdParty-Libs/LibPrettyPrint/doc
+  - ThirdParty-Libs/LibPrettyPrint/ThirdParty
+  - ThirdParty-Libs/LibPrettyPrint/LICENSE
+  - ThirdParty-Libs/LibPrettyPrint/Libs/Developer
+
+# Base path is .release/
+move-folders:
+  _setup/ThirdParty-Libs: ../LibTraceKit/ThirdParty/Libs

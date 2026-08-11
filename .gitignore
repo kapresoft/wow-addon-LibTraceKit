@@ -39,3 +39,24 @@ luac.out
 *.x86_64
 *.hex
 
+# IDE's
+*.iml
+/.idea/
+/.history/
+/.vscode/
+
+# Visual Source Code Test Deployment
+/.deploy
+# BigWigMods/packager
+/build
+/.release
+# Ignore Saved Variables folder with symlinks
+/_SV
+
+*/ThirdParty/Libs/
+
+# Build artifacts
+_setup.*
+# Don't save this
+deployer-config.lua
+.emmyrc.json
