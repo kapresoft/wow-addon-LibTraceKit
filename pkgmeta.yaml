@@ -18,9 +18,6 @@ externals:
   DevSuite/ThirdParty/Libs/LibPrettyPrint:
     url: https://github.com/kapresoft/wow-addon-LibPrettyPrint
     tag: latest
-  DevSuite/ThirdParty/Libs/Kapresoft-LibUtil:
-    url: https://github.com/kapresoft/wow-lib-util
-    tag: latest
 
 ignore:
   - "*.sh"
@@ -30,17 +27,6 @@ ignore:
   - dev
   - doc
   - scripts
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/dev
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/*.md
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/*.yaml
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/*.sh
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-1-0
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/*.toc
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.lua
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.xml
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/Assets
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/ThirdParty
-  - LibTraceKit/ThirdParty/Libs/Kapresoft-LibUtil/Lib-2-0/Annotations
   - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/dev
   - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/doc
   - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/Assets

@@ -12,9 +12,6 @@ externals:
   ThirdParty-Libs/LibPrettyPrint:
     url: https://github.com/kapresoft/wow-addon-LibPrettyPrint
     tag: latest
-  ThirdParty-Libs/Kapresoft-LibUtil:
-    url: https://github.com/kapresoft/wow-lib-util
-    tag: latest
 
 ignore:
   - "*.sh"
@@ -33,13 +30,6 @@ ignore:
   - Bindings.xml
   - DevSuite.xml
   - ThirdParty-Libs/LibStub/tests
-  - ThirdParty-Libs/Kapresoft-LibUtil/dev
-  - ThirdParty-Libs/Kapresoft-LibUtil/LICENSE
-  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-1-0
-  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/Assets
-  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/ThirdParty
-  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.lua
-  - ThirdParty-Libs/Kapresoft-LibUtil/Lib-2-0/LibUtil.xml
   - ThirdParty-Libs/LibPrettyPrint/*.sh
   - ThirdParty-Libs/LibPrettyPrint/LibPrettyPrint.xml
   - ThirdParty-Libs/LibPrettyPrint/Assets
