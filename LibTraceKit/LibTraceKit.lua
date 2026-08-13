@@ -1,14 +1,16 @@
----@alias LibTraceKit_HexColor-1.0 string @hex color value, i.e. '0056AA', 'EEFFEE'
+--- @alias LibTraceKit_HexColor-1.0 string|colorRGB @hex color value, i.e. '0056AA', 'EEFFEE'
+--- @alias LibTraceKit_ColorFn-1.0 fun(string) : string
+--- @alias TraceKit_MultiFunction-1.0 TraceKit-1.0 | fun(...) : void
 
 --- [LibPrettyPrint](https://github.com/kapresoft/wow-addon-LibPrettyPrint/blob/main/README.md)
----@alias LibTraceKit_Formatter-1.0 fun(...)
+--- @alias LibTraceKit_Formatter-1.0 fun(...)
 
 --[[-----------------------------------------------------------------------------
 Library: LibTraceKit
 -------------------------------------------------------------------------------]]
 local MAJOR, MINOR = 'LibTraceKit-1.0', 1
 
----@class LibTraceKit-1.0
+--- @class LibTraceKit-1.0
 local LibTraceKit = LibStub:NewLibrary(MAJOR, MINOR); if not LibTraceKit then return end
 
 --[[-----------------------------------------------------------------------------
@@ -26,15 +28,15 @@ local DEFAULT_COLOR = '42AFFA'
 Support Functions
 -------------------------------------------------------------------------------]]
 
----@private
----@return number @decimal color val
+--- @private
+--- @return number @decimal color val
 local function ColorValueFromHex(str, index)
   return tonumber(str:sub(index, index + 1), 16) / 255
 end
 
----@private
----@param hexColorRGB HexRGB | '565656' | 'efefef'
----@return colorRGB?
+--- @private
+--- @param hexColorRGB HexRGB | '565656' | 'efefef'
+--- @return colorRGB?
 local function ColorFromHexRGB(hexColorRGB)
   if #hexColorRGB == #COLOR_FORMAT_RGB then
     local r, g, b = ColorValueFromHex(hexColorRGB, 1),
@@ -44,10 +46,18 @@ local function ColorFromHexRGB(hexColorRGB)
   return nil
 end
 
----@param colorRGB colorRGB | string @A Color object, or the hex RRGGBB color | '565656' | 'fc565656'
----@return cfFn
+--- ### Usage:
+--- ```
+--- local colorFn = cfn(PURE_BLUE_COLOR)
+--- print(colorFn('Hello') -- prints in blue
+--- -- OR
+--- local colorFn = cfn('565656')
+--- print(colorFn('Hello') -- prints in 0x565656 color
+--- ```
+--- @param colorRGB colorRGB | colorRGBA | LibTraceKit_HexColor-1.0 | '565656' | '33eeaa' | 'A Color object, or the hex RRGGBB color'
+--- @return LibTraceKit_ColorFn-1.0
 local function cfn(colorRGB)
-  ---@type colorRGB?
+  --- @type colorRGB?
   local c = type(colorRGB) == 'string' and ColorFromHexRGB(colorRGB) or colorRGB
   assertsafe(
     c and type(c.WrapTextInColorCode) == 'function',
@@ -57,53 +67,74 @@ local function cfn(colorRGB)
   return function (arg) return c:WrapTextInColorCode(tostring(arg)) end
 end
 
+--- @return LibTraceKit_Formatter-1.0
+local function CreateFormatter()
+  return LibPrettyPrint:Formatter({ show_all = true, depth_limit = 1 }) --[[@as LibTraceKit_Formatter-1.0 ]]
+end
+
+--- @param namespace string             @The base name of the trace
+--- @param tag string                   @An optional tag name
+--- @param colorFn LibTraceKit_ColorFn-1.0  @The primary color function
+--- @param delim string                 @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG'
+--- @param ... any
+local function TraceKit_TraceFn(namespace, tag, colorFn, delim, ...)
+  --- @type EventTrace
+  local et = EventTrace; if not (et and et.LogEvent) then return end
+  local n = namespace
+  if type(tag) == 'string' then n = ('%s%s%s'):format(n, delim, tag) end
+  et:LogEvent(colorFn(n), ...)
+end
+
+---@param str string
+---@return boolean
+local function Str_IsBlank(str)
+  if str == nil then return true end
+  if type(str) ~= "string" then return false end
+  return not str:find("%S")
+end
+
+--- @param str string
+--- @return boolean
+local function Str_IsNotBlank(str) return Str_IsBlank(str) ~= true end
+
 --[[-----------------------------------------------------------------------------
-LibTraceKit
+TraceKit
 -------------------------------------------------------------------------------]]
+
 --- @class TraceKit-1.0
 --- @field namespace string
 --- @field tag string @An optional tag name
---- @field pc Color @The primary color function
+--- @field colorFn LibTraceKit_ColorFn-1.0 @The primary color function
 --- @field delim string @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG'
 local TraceKit = {}
 TraceKit.__index = TraceKit
 TraceKit.__type = 'TraceKit'
 
----@private
----@param self TraceKit-1.0
+--- @private
+--- @param self TraceKit-1.0
 TraceKit.__call = function (self, ...) self:LogEvent(...) end
 
---- tag is optional:  #__Init(namespace, hexColor) or #__Init(namespace, tag, hexColor)
---- @private
---- @param namespace string                                The namespace or identifier of the trace message
---- @param hexColor  LibTraceKit_HexColor-1.0 | colorRGB)? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted.
-function TraceKit:__Init(namespace, hexColor)
+--- @package
+--- @param namespace string                                 @The namespace or identifier of the trace message
+--- @param tag string?                                      @An optional tag name (Optional)
+--- @param hexColor  (LibTraceKit_HexColor-1.0 | colorRGB)? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
+--- @param delim string?                                    @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG' (Optional)
+function TraceKit:__Init(namespace, tag, hexColor, delim)
   assertsafe(
-    type(namespace) == 'string' and #strtrim(namespace) > 0,
+    Str_IsNotBlank(namespace),
     'Invalid namespace: <%s>. TraceKit:__Init(namespace): <namespace> should be a non-empty string', tostring(namespace)
   )
   self.namespace = strupper(strtrim(namespace))
-  ---@type LibTraceKit_Formatter-1.0
+  if Str_IsNotBlank(tag) then self.tag = strupper(strtrim(tag)) end
+  --- @type LibTraceKit_Formatter-1.0
   self.formatter = LibPrettyPrint:Formatter({ show_all = true, depth_limit = 1 })
-  self.pc = cfn(hexColor or DEFAULT_COLOR)
-  self.delim = DEFAULT_DELIM
-end
-
---- @private
---- @param ... any
-function TraceKit:LogEvent(...)
-  ---@type EventTrace
-  local et = EventTrace; if not (et and et.LogEvent) then return end
-  local n = self.namespace
-  if type(self.tag) == 'string' then
-    n = ('%s%s%s'):format(n, self.delim, self.tag)
-  end
-  et:LogEvent(self.pc(n), ...)
+  self.colorFn = cfn(hexColor or DEFAULT_COLOR)
+  self.delim = Str_IsNotBlank(delim) and delim or DEFAULT_DELIM
 end
 
 --- This is a fluid function
----@param tag string? @tag name
----@return TraceKit-1.0 | fun(...), LibTraceKit_Formatter-1.0
+--- @param tag string? @tag name
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
 function TraceKit:WithTag(tag)
   assertsafe(
     type(tag) == 'string' and #strtrim(tag) > 0,
@@ -114,8 +145,23 @@ function TraceKit:WithTag(tag)
 end
 
 --- This is a fluid function
----@param delim string? @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG'
----@return TraceKit-1.0 | fun(...), LibTraceKit_Formatter-1.0
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+function TraceKit:WithNoTag()
+  self.tag = nil
+  return self, self.formatter
+end
+
+--- Acceptable types:  '00AAEE' or RED_FONT_COLOR, etc..
+--- @param hexColor  (LibTraceKit_HexColor-1.0 | colorRGB)? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+function TraceKit:WithColor(hexColor)
+  self.colorFn = cfn(hexColor or DEFAULT_COLOR)
+  return self, self.formatter
+end
+
+--- This is a fluid function
+--- @param delim string? @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG'
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
 function TraceKit:WithDelimiter(delim)
   assertsafe(
     type(delim) == 'string', 'Invalid delim: <%s>. TraceKit:SetDelimiter(delim): <delim> should be a string.',
@@ -126,10 +172,54 @@ function TraceKit:WithDelimiter(delim)
 end
 
 --- This is a fluid function
----@return TraceKit-1.0 | fun(...), LibTraceKit_Formatter-1.0
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
 function TraceKit:WithUnderscoreDelimiter()
   self.delim = '_'
   return self, self.formatter
+end
+
+--- @private
+--- @param ... any
+function TraceKit:LogEvent(...)
+  TraceKit_TraceFn(self.namespace, self.tag, self.colorFn, self.delim, ...)
+end
+
+--- ### Usage:
+--- ```
+--- local colorFn = TraceKit.CreateColorFunction(PURE_BLUE_COLOR)
+--- print(colorFn('Hello') -- prints in blue
+--- -- OR
+--- local colorFn = TraceKit.CreateColorFunction('565656')
+--- print(colorFn('Hello') -- prints in 0x565656 color
+--- ```
+---
+--- @param colorRGB colorRGB | colorRGBA | LibTraceKit_HexColor-1.0 | '565656' | 'fc565656' | 'A Color object, or the hex RRGGBB color'
+--- @return LibTraceKit_ColorFn-1.0
+function TraceKit.CreateColorFunction(colorRGB) return cfn(colorRGB) end
+
+--- An alternative way to construct a TraceKit that returns only a trace function (not TraceKit-1.0)
+--- To set delim without tag/hexColor, pass nil for the args you want to skip: CreateTraceFunction('ns', nil, nil, '.')
+---
+--- @param namespace string                   @The namespace or identifier of the trace message
+--- @param tag string?                        @An optional tag name (Optional)
+--- @param hexColor LibTraceKit_HexColor-1.0? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
+--- @param delim string?                      @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG' (Optional)
+--- @overload fun(namespace: string): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @overload fun(namespace: string, tag:string): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @overload fun(namespace: string, tag:string, hexColor: LibTraceKit_HexColor-1.0): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @return fun(...), LibTraceKit_Formatter-1.0
+function LibTraceKit.CreateTraceFunction(namespace, tag, hexColor, delim)
+  assertsafe(
+    Str_IsNotBlank(namespace),
+    'Invalid namespace: <%s>. LibTraceKit.CreateTraceFunction(namespace): <namespace> should be a non-empty string', tostring(namespace)
+  )
+  local tfn = function(...)
+    TraceKit_TraceFn(strupper(namespace),
+      Str_IsNotBlank(tag) and strupper(tag) or nil,
+      cfn(hexColor or DEFAULT_COLOR),
+      delim or DEFAULT_DELIM, ...)
+  end
+  return tfn, CreateFormatter()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -146,17 +236,24 @@ LibTraceKit
 --- local t, fmt = LibTraceKit:New('libtracekit')
 ---                   :WithTag('EventHandler')
 ---                   :WithDelimiter('$')
+--- -- OR
+--- local t, fmt = LibTraceKit:New('libtracekit', 'EventHandler', ORANGE_THREAT_COLOR, '_')
 --- ```
---- @param namespace string                                The namespace or identifier of the trace message
---- @param hexColor  LibTraceKit_HexColor-1.0 | colorRGB)? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted.
---- @overload fun(namespace: string): TraceKit-1.0 | fun(...), LibTraceKit_Formatter-1.0
---- @return TraceKit-1.0 | fun(...), LibTraceKit_Formatter-1.0
-function LibTraceKit:New(namespace, hexColor)
+---
+--- @param namespace string                   @The namespace or identifier of the trace message
+--- @param tag string?                        @An optional tag name (Optional)
+--- @param hexColor LibTraceKit_HexColor-1.0? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
+--- @param delim string?                      @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG' (Optional)
+--- @overload fun(namespace: string): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @overload fun(namespace: string, tag:string): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @overload fun(namespace: string, tag:string, hexColor: LibTraceKit_HexColor-1.0): TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+--- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
+function LibTraceKit:New(namespace, tag, hexColor, delim)
   assertsafe(type(namespace) == 'string', 'LibTraceKit:New(namespace): <namespace> should be a string.')
 
-  ---@type TraceKit-1.0
+  --- @type TraceKit-1.0
   local tk = setmetatable({}, TraceKit)
-  tk:__Init(namespace, hexColor)
+  tk:__Init(namespace, tag, hexColor, delim)
 
   return tk, tk.formatter
 end
