@@ -46,4 +46,4 @@ function o:PLAYER_ENTERING_WORLD(evt, ...)
   tx('Player logged in', 'isLogin=', isLogIn, 'isReload=', isReload)
 end
 
-o:RegisterEvent('PLAYER_ENTERING_WORLD')
+--o:RegisterEvent('PLAYER_ENTERING_WORLD')
