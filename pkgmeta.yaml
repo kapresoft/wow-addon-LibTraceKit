@@ -6,7 +6,6 @@ license-output: LICENSE.txt
 embedded-libraries:
   - LibStub
   - LibPrettyPrint
-  - LibUtil
 
 tools-used:
   - DevSuite
