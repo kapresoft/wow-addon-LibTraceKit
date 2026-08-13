@@ -239,7 +239,7 @@ LibTraceKit
 --- -- OR
 --- local t, fmt = LibTraceKit:New('libtracekit', 'EventHandler', ORANGE_THREAT_COLOR, '_')
 --- ```
----
+---   
 --- @param namespace string                   @The namespace or identifier of the trace message
 --- @param tag string?                        @An optional tag name (Optional)
 --- @param hexColor LibTraceKit_HexColor-1.0? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
