@@ -1,0 +1,4 @@
+-- Open EventTrace UI
+-- Put 'kit' as filter
+-- /run local ltk = LibStub('LibTraceKit-1.0'); local t = ltk:New('TraceKit'):WithTag('test'); t('hello=', 'world')
+-- Result: Prints a trace: TRACEKIT:TEST "hello=", "world"

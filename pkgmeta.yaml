@@ -13,8 +13,10 @@ tools-used:
   - Bug-Grabber
 
 externals:
-  ThirdParty-Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
-  DevSuite/ThirdParty/Libs/LibPrettyPrint:
+  ThirdParty/Libs/LibStub:
+    url: https://repos.wowace.com/wow/libstub/trunk
+    tag: latest
+  ThirdParty/Libs/LibPrettyPrint:
     url: https://github.com/kapresoft/wow-addon-LibPrettyPrint
     tag: latest
 
@@ -26,30 +28,14 @@ ignore:
   - dev
   - doc
   - scripts
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/dev
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/doc
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/Assets
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/ThirdParty
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/LibPrettyPrint.xml
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/Libs/Developer/*.xml
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/Libs/Developer/Developer*.lua
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/Libs/Annotations
-  - LibTraceKit/ThirdParty/Libs/LibPrettyPrint/*.toc
-
-
-# REQUIRED for CurseForge packager (non-obvious):
-# The LEFT side MUST be <repo-folder>/<addon-folder>
-#   - <addon-folder> MUST be the folder that contains the .toc files
-# The RIGHT side MUST be the addon name:
-#   - Must match the .toc filename (AddonName.toc)
-#   - Must match `package-as`
-#
-# NOTE:
-# CurseForge release.sh (poorly) relies on `move-folders` for *addon discovery*,
-# not just post-processing. If this does not exactly match
-# <repo>/<addon>, `toc_root_paths` will be empty and packaging WILL fail.
-#
-# ⚠️ Do not change unless you also change the repo/addon layout.
-# Base path is .release/
-move-folders:
-  LibTraceKit/LibTraceKit: LibTraceKit
+  - ThirdParty/Libs/LibStub/tests
+  - ThirdParty/Libs/LibStub/*.toc
+  - ThirdParty/Libs/LibPrettyPrint/dev
+  - ThirdParty/Libs/LibPrettyPrint/doc
+  - ThirdParty/Libs/LibPrettyPrint/Assets
+  - ThirdParty/Libs/LibPrettyPrint/ThirdParty
+  - ThirdParty/Libs/LibPrettyPrint/LibPrettyPrint.xml
+  - ThirdParty/Libs/LibPrettyPrint/Libs/Developer/*.xml
+  - ThirdParty/Libs/LibPrettyPrint/Libs/Developer/Developer*.lua
+  - ThirdParty/Libs/LibPrettyPrint/Libs/Annotations
+  - ThirdParty/Libs/LibPrettyPrint/*.toc

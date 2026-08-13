@@ -5,10 +5,12 @@
 # Note: This will build in ./.release/_setup directory
 package-as: _setup
 # --------------------------
-no-changelog: true
+manual-changelog: dev/changelog-empty.txt
 
 externals:
-  ThirdParty-Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  ThirdParty-Libs/LibStub:
+    url: https://repos.wowace.com/wow/libstub/trunk
+    tag: latest
   ThirdParty-Libs/LibPrettyPrint:
     url: https://github.com/kapresoft/wow-addon-LibPrettyPrint
     tag: latest
@@ -29,6 +31,8 @@ ignore:
   - Core
   - Bindings.xml
   - DevSuite.xml
+  - Libs
+  - LibTraceKit.lua
   - ThirdParty-Libs/LibStub/tests
   - ThirdParty-Libs/LibPrettyPrint/*.sh
   - ThirdParty-Libs/LibPrettyPrint/LibPrettyPrint.xml
@@ -41,4 +45,4 @@ ignore:
 
 # Base path is .release/
 move-folders:
-  _setup/ThirdParty-Libs: ../LibTraceKit/ThirdParty/Libs
+  _setup/ThirdParty-Libs: ../ThirdParty/Libs

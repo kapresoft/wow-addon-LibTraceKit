@@ -7,32 +7,25 @@ local addonName, xns = ...
 New Instance
 -------------------------------------------------------------------------------]]
 local libName = 'Developer'
---- @class Developer : AceEvent-3.0
-local o = {}; LibStub('AceEvent-3.0'):Embed(o); tkd = o
+--- @class Developer
+local o = {}; tkd = o
 
 --- @type LibTraceKit-1.0
 local LibTraceKit = LibStub('LibTraceKit-1.0')
 
------ @type TraceKit-1.0, LibTraceKit_Formatter-1.0
---local t, fmt = LibTraceKit:New('libtracekit', SPELLBOOK_FONT_COLOR)
---                  :WithTag('EventHandler')
---                  :WithDelimiter('.')
+--[[-----------------------------------------------------------------------------
+Methods
+-------------------------------------------------------------------------------]]
 
---- @param tag string
---- @return TraceKit_MultiFunction-1.0
-local function traceFn(tag)
-  --local tx, fmtx = LibTraceKit:New('libtracekit', prefix, ORANGE_THREAT_COLOR)
-  local tx, fmtx = LibTraceKit:New('libtracekit')
-                        :WithTag(tag)
-                        :WithDelimiter('_')
-  --ORANGE_THREAT_COLOR)
-  return tx
+function o:test1()
+  local ltk = LibStub('LibTraceKit-1.0');
+  local t = ltk:New('TraceKit'):WithTag('test');
+  t('hello=', 'world')
 end
 
---[[-----------------------------------------------------------------------------
-Mixin Methods
--------------------------------------------------------------------------------]]
-function o:PLAYER_ENTERING_WORLD(evt, ...)
+--- @param evt Name
+--- @param ... any
+function o.PLAYER_ENTERING_WORLD(evt, ...)
   local isLogIn, isReload = ...
   --local tf = traceFn('Developer')
   local t, fmt = LibTraceKit:New('libtracekit')
@@ -46,4 +39,9 @@ function o:PLAYER_ENTERING_WORLD(evt, ...)
   tx('Player logged in', 'isLogin=', isLogIn, 'isReload=', isReload)
 end
 
---o:RegisterEvent('PLAYER_ENTERING_WORLD')
+--- @type Frame
+local frame = CreateFrame('Frame')
+frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+frame:SetScript('OnEvent', function(_, event, ...)
+  if o[event] then o[event](event, ...) end
+end)

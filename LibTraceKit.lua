@@ -24,6 +24,12 @@ local COLOR_FORMAT_RGB = COLOR_FORMAT_RGB or 'RRGGBB'
 local DEFAULT_DELIM = '::'
 local DEFAULT_COLOR = '42AFFA'
 
+
+-- Lazy loaded event trace so that we don't need
+-- to have dependency on Blizzard_EventTrace
+--- @type EventTrace?
+local eventTrace
+
 --[[-----------------------------------------------------------------------------
 Support Functions
 -------------------------------------------------------------------------------]]
@@ -72,17 +78,29 @@ local function CreateFormatter()
   return LibPrettyPrint:Formatter({ show_all = true, depth_limit = 1 }) --[[@as LibTraceKit_Formatter-1.0 ]]
 end
 
+--- @return EventTrace?
+local function GetEventTrace()
+  if eventTrace then return eventTrace end
+  if not EventTrace then return nil end
+  eventTrace = EventTrace
+  --@do-not-package@
+  local c = CreateColorFromHexString('ff3ED8FF')
+  local prefix = c:WrapTextInColorCode(strupper('LibTraceKit::GetEventTrace'))
+  eventTrace:LogEvent(prefix, 'Resolved-EventTrace=', eventTrace)
+  --@end-do-not-package@
+  return eventTrace
+end
+
 --- @param namespace string             @The base name of the trace
 --- @param tag string                   @An optional tag name
 --- @param colorFn LibTraceKit_ColorFn-1.0  @The primary color function
 --- @param delim string                 @Delimiter override; defaults to '::', i.e. 'NAMESPACE::TAG'
 --- @param ... any
 local function TraceKit_TraceFn(namespace, tag, colorFn, delim, ...)
-  --- @type EventTrace
-  local et = EventTrace; if not (et and et.LogEvent) then return end
+  local evtt = GetEventTrace(); if not (evtt and evtt.LogEvent) then return end
   local n = namespace
   if type(tag) == 'string' then n = ('%s%s%s'):format(n, delim, tag) end
-  et:LogEvent(colorFn(n), ...)
+  evtt:LogEvent(colorFn(n), ...)
 end
 
 ---@param str string
@@ -257,3 +275,11 @@ function LibTraceKit:New(namespace, tag, hexColor, delim)
 
   return tk, tk.formatter
 end
+
+local watcher = CreateFrame('Frame')
+watcher:RegisterEvent('ADDON_LOADED')
+watcher:SetScript('OnEvent', function (self, event, addonName)
+  if addonName == 'Blizzard_EventTrace' then
+    GetEventTrace(); self:UnregisterEvent('ADDON_LOADED')
+  end
+end)
