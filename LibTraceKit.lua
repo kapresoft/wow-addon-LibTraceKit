@@ -8,7 +8,7 @@
 --[[-----------------------------------------------------------------------------
 Library: LibTraceKit
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibTraceKit-1.0', 1
+local MAJOR, MINOR = 'LibTraceKit-1.0', 2
 
 --- @class LibTraceKit-1.0
 local LibTraceKit = LibStub:NewLibrary(MAJOR, MINOR); if not LibTraceKit then return end
@@ -169,6 +169,15 @@ function TraceKit:WithNoTag()
   return self, self.formatter
 end
 
+--- ## Usage
+--- ```
+--- -- Directly supports a 6-hex RGB color or a colorRGB* object:
+--- WithColor('7ACFFB')
+--- WithColor(RED_FONT_COLOR)
+--- -- For ARGB or RGBA hex strings, build the color first:
+--- WithColor(CreateColorFromHexString('ff7ACFFB'))    -- ARGB
+--- WithColor(CreateColorFromRGBAHexString('7ACFFBff')) -- RGBA
+--- ```
 --- Acceptable types:  '00AAEE' or RED_FONT_COLOR, etc..
 --- @param hexColor  (LibTraceKit_HexColor-1.0 | colorRGB)? @A hex color value if tag is provided, i.e. '0056AA', 'EEFFEE'; otherwise can be ommitted (Optional)
 --- @return TraceKit_MultiFunction-1.0, LibTraceKit_Formatter-1.0
