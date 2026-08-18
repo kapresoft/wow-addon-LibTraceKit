@@ -2,6 +2,9 @@ package-as: LibTraceKit
 # --------------------------
 enable-nolib-creation: no
 license-output: LICENSE.txt
+manual-changelog:
+  filename: dev/changelog-release.md
+  markup-type: markdown
 
 embedded-libraries:
   - LibStub
