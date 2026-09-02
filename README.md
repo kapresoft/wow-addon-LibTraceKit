@@ -92,3 +92,14 @@ t('Player logged in', 'isLogin=', isLogIn, 'isReload=', isReload)
 ## License
 All Rights Reserved.
 
+## Donations
+
+If LibTraceKit has made your addon development easier, consider supporting its development:
+
+- **[Paypal&trade; Donation](https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU)**
+- **[Bitcoin Donation](https://www.blockchain.com/btc/address/3QQVAwJGkKHMM2oq6CLVWYgfx83TFVwp39)**
+
+## Author Notes
+
+- About the Author [(Tony Lagnada)](https://tony.resume.lagnada.com/)
+- My AddOn Portfolio Can Be Found Here [Curse Forge/Kapresoft](https://www.curseforge.com/members/kapresoft/projects)
