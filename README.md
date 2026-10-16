@@ -1,5 +1,8 @@
-# LibTraceKit
-> ▶︎ _Because scrolling through 200 lines of print() is not a debugging strategy._
+[![Release Build](https://github.com/kapresoft/wow-addon-LibTraceKit/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-addon-LibTraceKit/actions/workflows/release-build.yml)
+
+# LibTraceKit :: Because scrolling through 200 lines of print() is not a debugging strategy.
+
+![download-count](https://cf.way2muchnoise.eu/full_1642468_downloads.svg?badge_style=for_the_badge) ![supported-wow-versions](https://cf.way2muchnoise.eu/versions/World%20of%20Warcraft%20Versions_1642468_all.svg?badge_style=for_the_badge)
 
 _LibTraceKit_ is a lightweight tracing library for WoW addon developers. Create a tagged tracer with `TraceKit('<Addon Name>')` and call it like a function to send labeled debug messages to Blizzard's Event Trace UI.
 
