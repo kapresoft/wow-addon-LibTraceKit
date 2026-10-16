@@ -4,53 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LibTraceKit is a lightweight WoW addon library for tagged debug tracing. It gives addon developers `TraceKit('<Addon Name>')` -- a tracer you create once and then call like a function, e.g. `t('value of namespace=', namespace)` -- to send labeled debug messages straight into Blizzard's `/etrace` Event Trace UI, instead of scattering `print()` calls or maintaining a separate debug log.
+LibTraceKit is a lightweight WoW library for tagged debug tracing. `LibStub('LibTraceKit-1.0'):New('<Addon Name>')` returns a tracer (and a formatter) that you call like a function, e.g. `t('value of namespace=', namespace)`, to send labeled messages to Blizzard's `/etrace` Event Trace UI instead of scattering `print()` calls.
 
-LibTraceKit is a **library**, not a standalone addon: it ships with its own `.toc` for standalone testing/deployment in WoW, but is primarily meant to be consumed by other addons via git-sync (see `dev/setup.yml` in consumer addons, e.g. how DevSuite pulls `ThirdParty-Libs/LibPrettyPrint`).
+**Work in progress:** the API is still changing, and `README.md` may describe planned usage (e.g. a global `TraceKit('<Addon Name>')`) that the code doesn't implement yet. Treat the code as the current truth; don't "fix" the README or the code to match each other unless asked.
+
+It's a **library**, not a standalone addon. It ships its own `.toc` for standalone testing and deployment, but consumers usually embed it: they git-sync it into their `ThirdParty/Libs` through their `dev/setup.yml`, as ActionbarPlus does with `ThirdParty-Libs/LibTraceKit`.
 
 ## Build & Release
 
-### Pull external library dependencies
-
-```shell
-w-sync-libs
-# Output goes to .release/
-```
-
-### Deployment to local WoW installs
-
-#### One-time deploy
-```shell
-w-deployer -c ./dev/deployer-config.lua
-```
-
-#### Continuous Deploy with 'quiet' -q and 'watch' -w mode
-
-```shell
-w-deployer -c ./dev/deployer-config.lua -qw
-```
-
-### Clean build
-```shell
-./dev/release-clean.sh
-```
-
-### Release process
-1. Create pull requests
-2. Create tag to publish -- an automated GitHub Action will push any tag created
-3. Verify CurseForge build is green, then publish the GitHub draft release
-
-There are no automated tests. Validation is done in-game.
+See "Build & Release (WoW addons)" in `~/.claude/Claude-Wow-Addon-Dev.md`.
 
 ## Architecture
 
-Single-purpose library, not split into multiple modules. Source lives under `Libs/`. As the library grows, keep it flat unless a real second concern (e.g. formatting, filtering) emerges -- don't pre-build a module registry or namespace system before there's more than one file's worth of logic.
+Single-purpose library in one file, `LibTraceKit.lua` (registered with LibStub as `LibTraceKit-1.0`). `Libs/` holds only the dev-only `Developer.lua` (TOC-wrapped in `#@debug@`) and assets. Embedded deps (LibStub, LibPrettyPrint) load from `ThirdParty/ThirdParty.xml`.
+
+Keep it flat unless a real second concern (e.g. formatting, filtering) emerges; don't pre-build a module registry or namespace system before there's more than one file's worth of logic.
 
 ## Key conventions
 
-- **Optional dependency, not required** -- consuming addons declare LibTraceKit under `OptionalDeps` in their `.toc`, not `RequiredDeps`. LibTraceKit itself should have zero hard dependency on any other addon.
-- **No unit test framework** -- test in-game. Use `/etrace` to confirm traced messages appear correctly.
-- **EmmyLua annotations** -- use EmmyLua (`---@param`, `---@return`, `---@class`) for IDE type checking on the public API surface.
+- **No hard dependency on another addon:** everything LibTraceKit needs is embedded. A consumer relying on a standalone install should list it under `OptionalDeps`, not `RequiredDeps`.
+- **Testing in game:** use `/etrace` to confirm traced messages appear correctly.
 
 ## Code style
 
