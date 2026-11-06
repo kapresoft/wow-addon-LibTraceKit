@@ -8,7 +8,7 @@
 --[[-----------------------------------------------------------------------------
 Library: LibTraceKit
 -------------------------------------------------------------------------------]]
-local MAJOR, MINOR = 'LibTraceKit-1.0', 2
+local MAJOR, MINOR = 'LibTraceKit-1.0', 3
 
 --- @class LibTraceKit-1.0
 local LibTraceKit = LibStub:NewLibrary(MAJOR, MINOR); if not LibTraceKit then return end
@@ -91,6 +91,29 @@ local function GetEventTrace()
   return eventTrace
 end
 
+--- No-op on clients without the secret-value APIs.
+--- @param v any
+--- @return string? @nil unless v is secret or inaccessible
+local function SecretText(v)
+  if not (issecretvalue and canaccessvalue and canaccesstable) then return end
+  if issecretvalue(v) or not canaccessvalue(v)
+      or (type(v) == 'table' and not canaccesstable(v)) then
+    return ('<secret %s>'):format(type(v))
+  end
+end
+
+--- EventTrace's tainted redraw errors on secrets in table.concat.
+--- @param ... any
+--- @return any @The args with secrets replaced by placeholders
+local function ScrubSecrets(...)
+  local n = select('#', ...)
+  local args = { ... }
+  for i = 1, n do
+    args[i] = SecretText(args[i]) or args[i]
+  end
+  return unpack(args, 1, n)
+end
+
 --- @param namespace string             @The base name of the trace
 --- @param tag string                   @An optional tag name
 --- @param colorFn LibTraceKit_ColorFn-1.0  @The primary color function
@@ -100,7 +123,7 @@ local function TraceKit_TraceFn(namespace, tag, colorFn, delim, ...)
   local evtt = GetEventTrace(); if not (evtt and evtt.LogEvent) then return end
   local n = namespace
   if type(tag) == 'string' then n = ('%s%s%s'):format(n, delim, tag) end
-  evtt:LogEvent(colorFn(n), ...)
+  evtt:LogEvent(colorFn(n), ScrubSecrets(...))
 end
 
 ---@param str string
